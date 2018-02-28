@@ -3,7 +3,6 @@ import numpy as np
 import re
 import datetime
 
-os.chdir("..")
 
 def get_city():
     city = input('Would you like to see data for Chicago, New York, or Washington?\n')
@@ -41,42 +40,27 @@ def get_day():
     return day
 
 
-def popular_month():
-    months = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    name_months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
-                   "November", "December"]
-    a = city.splitlines()
+def popular_month(city,cityinitial):
+    ## month is an empty dictionary
+    months = {}
+    ## first record contains column names, let's remove it
+    a = city.splitlines()[1:]
+
     for i in a:
-        times = str(i[5]) + str(i[6])
-        if str(times) == "01":
-            months[0] += 1
-        elif str(times) == "02":
-            months[1] += 1
-        elif str(times) == "03":
-            months[2] += 1
-        elif str(times) == "04":
-            months[3] += 1
-        elif str(times) == "05":
-            months[4] += 1
-        elif str(times) == "06":
-            months[5] += 1
-        elif str(times) == "07":
-            months[6] += 1
-        elif str(times) == "08":
-            months[7] += 1
-        elif str(times) == "09":
-            months[8] += 1
-        elif str(times) == "10":
-            months[9] += 1
-        elif str(times) == "11":
-            months[10] += 1
-        elif str(times) == "12":
-            months[11] += 1
-    i = 0
-    for i in range(len(months)):
-        if i == months.index(max(months)):
-            print("Most popular month to rent bikes is", name_months[i])
-        i += 1
+        times = i.split(',')[1] ## get date record
+        ## record is different for different cities
+        if (cityinitial == "w") or (cityinitial == "c"):
+            time = datetime.strptime(times, '%m/%d/%Y %H:%M')
+        else:
+            time = datetime.strptime(times, '%m/%d/%Y %H:%M:%S')
+        month = time.strftime("%B") ## get month name this way
+        ## fill in the dictionary:
+        if month in months:
+            months[month] += 1
+        else:
+            months[month] = 1
+    ## print the most popular month
+    print("Most popular month to rent bikes is", max(months, key=months.get))
 
 
 def weekdays():
@@ -343,3 +327,4 @@ elif city == "Washington" or city == "washington":
         station()
 
 '''
+
